@@ -1,6 +1,6 @@
 require('dotenv').config();
-/*const dns = require('dns');
-dns.setServers(['8.8.8.8', '1.1.1.1']); // DNS issue fix karne ke liye*/
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']); // DNS issue fix karne ke liye
 
 const express = require('express');
 const cors = require('cors');
