@@ -23,9 +23,9 @@ services:
       - key: MONGODB_URI
         sync: false
 
-  # Secondary Scaled Backend Container (studentRudra)
+  # Scaled Backend Container (saim)
   - type: web
-    name: studentRudra
+    name: saim
     runtime: docker
     dockerfilePath: ./Dockerfile
     region: singapore
