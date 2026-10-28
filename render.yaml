@@ -1,0 +1,23 @@
+# Render Blueprint for Student API Backend
+# Region: Singapore (sin)
+# Plan: Starter (paid plan supporting 2 or more instances)
+services:
+  - type: web
+    name: student-api
+    runtime: node
+    region: singapore
+    plan: starter
+    numInstances: 2
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: CORS_ORIGIN
+        value: https://student-frontend-ruddy.vercel.app
+      - key: MONGODB_URI
+        sync: false
