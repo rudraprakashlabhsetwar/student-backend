@@ -1,5 +1,5 @@
 # ==============================================================================
-# Production Dockerfile for Student Backend API (student-api)
+# Production Dockerfile for Student Backend API (student-api / studentRudra)
 # Optimized for Render Cloud Container Deployment
 # ==============================================================================
 FROM node:20-alpine
@@ -9,12 +9,11 @@ WORKDIR /app
 
 # Set production environment
 ENV NODE_ENV=production
-ENV PORT=5000
 
-# Install curl for Docker healthchecks
+# Install curl for healthchecks
 RUN apk add --no-cache curl
 
-# Copy package descriptors first for Docker layer caching
+# Copy package descriptors first for layer caching
 COPY package*.json ./
 
 # Install production dependencies cleanly
@@ -23,13 +22,12 @@ RUN npm ci --only=production
 # Copy application source code
 COPY . .
 
-# Expose backend API port
-EXPOSE 5000
+# Expose backend port (Render injects $PORT dynamically, default 5000/10000)
+EXPOSE 5000 10000
 
-# Health check inside container
+# Container healthcheck adapts dynamically to $PORT
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:5000/health || exit 1
+  CMD sh -c "curl -f http://127.0.0.1:${PORT:-5000}/health || exit 1"
 
-# Start the application
+# Start application
 CMD ["node", "server.js"]
-

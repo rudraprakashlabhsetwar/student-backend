@@ -92,10 +92,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server (Render injects PORT, usually 10000 or custom)
+// Start Server (Binds to 0.0.0.0 for Docker container routing)
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on 0.0.0.0:${PORT}`);
 });
 
 // Graceful Shutdown for Stateless Load Balancing
