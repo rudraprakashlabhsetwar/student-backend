@@ -1,14 +1,35 @@
-# Render Blueprint for Student API Backend
+# ==============================================================================
+# Render Blueprint for Scalable Student Management Backend Containers
 # Region: Singapore (sin)
-# Plan: Free tier (ask user before scaling to paid starter with numInstances > 1)
+# Plan: Free tier (no charges incurred)
+# ==============================================================================
 services:
+  # Primary Backend API Container
   - type: web
     name: student-api
-    runtime: node
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     region: singapore
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: CORS_ORIGIN
+        value: https://student-frontend-ruddy.vercel.app
+      - key: MONGODB_URI
+        sync: false
+
+  # Secondary Scaled Backend Container (studentRudra)
+  - type: web
+    name: studentRudra
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: free
     healthCheckPath: /health
     autoDeploy: true
     envVars:
