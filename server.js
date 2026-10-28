@@ -55,15 +55,19 @@ app.get('/health', (req, res) => {
     uptime: Math.floor(process.uptime()),
     timestamp: new Date().toISOString(),
     database: dbStatusMap[dbState] || 'unknown',
-    service: 'student-api',
+    service: process.env.RENDER_SERVICE_NAME || 'student-api',
+    hasMongoUri: Boolean(process.env.MONGODB_URI),
   });
 });
 
 // Root Information Route
 app.get('/', (req, res) => {
+  const dbState = mongoose.connection.readyState;
   res.json({
     success: true,
-    message: 'Student API is running perfectly!',
+    message: 'Student API is running!',
+    service: process.env.RENDER_SERVICE_NAME || 'student-api',
+    database: dbState === 1 ? 'connected' : 'disconnected (set MONGODB_URI in Render Dashboard -> Environment)',
     healthCheck: '/health',
   });
 });
@@ -88,7 +92,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
+// Start Server (Render injects PORT, usually 10000 or custom)
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
@@ -99,8 +103,10 @@ const gracefulShutdown = (signal) => {
   console.log(`🛑 Received ${signal}. Closing HTTP server and database connection gracefully...`);
   server.close(async () => {
     console.log('HTTP server closed.');
-    await mongoose.connection.close(false);
-    console.log('MongoDB connection closed.');
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close(false);
+      console.log('MongoDB connection closed.');
+    }
     process.exit(0);
   });
 };
