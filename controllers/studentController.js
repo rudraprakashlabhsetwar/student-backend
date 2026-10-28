@@ -2,13 +2,13 @@ const Student = require('../models/Student');
 
 // Helper to validate exactly 10 digits
 const isValidContact = (contact) => {
-  if (!contact) return false;
+  if (contact === null || contact === undefined || contact === '') return true;
   return /^\d{10}$/.test(String(contact).trim());
 };
 
 exports.createStudent = async (req, res) => {
   try {
-    if (req.body.contact && !isValidContact(req.body.contact)) {
+    if (!isValidContact(req.body.contact)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Contact number must be exactly 10 digits' 
@@ -35,7 +35,7 @@ exports.getAllStudents = async (req, res) => {
 
 exports.updateStudent = async (req, res) => {
   try {
-    if (req.body.contact !== undefined && !isValidContact(req.body.contact)) {
+    if (!isValidContact(req.body.contact)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Contact number must be exactly 10 digits' 

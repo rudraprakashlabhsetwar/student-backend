@@ -34,10 +34,10 @@ const studentSchema = new mongoose.Schema(
     },
     contact: { 
       type: String, 
-      required: [true, 'Contact number is required'],
       trim: true,
       validate: {
         validator: function (v) {
+          if (v === null || v === undefined || v === '') return true;
           return /^\d{10}$/.test(v);
         },
         message: props => `${props.value} is not a valid contact number! Contact must be exactly 10 digits.`
